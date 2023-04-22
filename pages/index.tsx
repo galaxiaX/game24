@@ -50,7 +50,7 @@ const Home = () => {
           <h1 className="text-[2.5rem] sm:text-7xl font-bold mb-2">
             Game 24 Solver
           </h1>
-          <p className="text-sm sm:text-[18px] inline-block w-[90vw] text-start sm:text-center sm:w-auto">
+          <p className="text-sm sm:text-[18px] inline-block w-[90vw] px-2 sm:px-0 text-start sm:text-center sm:w-auto">
             Enter 4 numbers below, then click &quot;Solve&quot; to see every
             solution that equals 24.
           </p>

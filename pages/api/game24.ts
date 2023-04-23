@@ -4,12 +4,12 @@ const isValidNumber = (num: number): boolean => {
   return num >= 1 && num <= 9;
 };
 
-const getPermutations = (arr: number[]): number[][] => {
-  const result: number[][] = [];
+const getPermutations = (arr: number[]): Set<number[]> => {
+  const result: Set<number[]> = new Set();
 
   const permute = (arr: number[], m: number[] = []) => {
     if (arr.length === 0) {
-      result.push(m);
+      result.add(m);
     } else {
       for (let i = 0; i < arr.length; i++) {
         const curr = arr.slice();
@@ -44,8 +44,7 @@ const game24Handler = (req: NextApiRequest, res: NextApiResponse) => {
   const permutations = getPermutations(numbers);
 
   // Loop through each permutation and try all possible combinations of arithmetic operations and brackets
-  let foundSolution = false;
-  const solutions: string[] = [];
+  const solutions: Set<string> = new Set();
   for (const perm of permutations) {
     const [a, b, c, d] = perm;
     const ops = ["+", "-", "*", "/"];
@@ -53,19 +52,17 @@ const game24Handler = (req: NextApiRequest, res: NextApiResponse) => {
       for (const op2 of ops) {
         for (const op3 of ops) {
           // Try all possible combinations of operations
-          const expr1 = `${a} ${op1} ${b} ${op2} ${c} ${op3} ${d}`;
-          const expr2 = `${a} ${op1} ${b} ${op2} (${c} ${op3} ${d})`;
-          const expr3 = `(${a} ${op1} ${b}) ${op2} ${c} ${op3} ${d}`;
-          const expr4 = `${a} ${op1} (${b} ${op2} ${c}) ${op3} ${d}`;
-          const expr5 = `${a} ${op1} ((${b} ${op2} ${c}) ${op3} ${d})`;
-
-          // Evaluate all possible expressions and check if the result is 24
-          const expressions = [expr1, expr2, expr3, expr4, expr5];
+          const expressions = [
+            `${a} ${op1} ${b} ${op2} ${c} ${op3} ${d}`,
+            `${a} ${op1} ${b} ${op2} (${c} ${op3} ${d})`,
+            `(${a} ${op1} ${b}) ${op2} ${c} ${op3} ${d}`,
+            `${a} ${op1} (${b} ${op2} ${c}) ${op3} ${d}`,
+            `${a} ${op1} ((${b} ${op2} ${c}) ${op3} ${d})`,
+          ];
           for (const expr of expressions) {
             try {
               if (eval(expr) === 24) {
-                foundSolution = true;
-                solutions.push(expr);
+                solutions.add(expr);
               }
             } catch (error) {
               // Ignore errors due to invalid expressions
@@ -77,11 +74,10 @@ const game24Handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Return the response based on whether a solution was found or not
-  if (foundSolution) {
-    const uniqueSolutions = [...new Set(solutions)];
+  if (solutions.size > 0) {
     res.status(200).json({
-      result: `Found ${uniqueSolutions.length} solutions`,
-      solutions: uniqueSolutions,
+      result: `Found ${solutions.size} solutions`,
+      solutions: Array.from(solutions),
     });
   } else {
     res.status(200).json({ result: "No solution found" });

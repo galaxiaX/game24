@@ -11,3 +11,14 @@
 *:focus {
   outline-color: #2563eb;
 }
+
+form {
+  @apply flex flex-col items-center gap-2 sm:gap-4 sm:p-2 my-2 w-[90vw] sm:w-auto mx-auto;
+}
+button {
+  @apply py-4 text-2xl text-white font-semibold rounded-lg hover:bg-opacity-90;
+}
+
+input {
+  @apply aspect-square text-5xl sm:text-8xl text-center rounded-lg bg-blue-300;
+}

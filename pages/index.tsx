@@ -1,3 +1,5 @@
+import FormBox from "@/components/FormBox";
+import ResultBox from "@/components/ResultBox";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -15,6 +17,13 @@ const Home = () => {
       newNumbers[index] = newValue;
       return newNumbers;
     });
+
+    const nextInput = document.getElementById(
+      `input-${index + 1}`
+    ) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,6 +47,8 @@ const Home = () => {
     setResult("");
     setSolutions([]);
     setLoading(false);
+    const input1 = document.getElementById("input-0") as HTMLInputElement;
+    input1.focus();
   }
 
   return (
@@ -54,57 +65,14 @@ const Home = () => {
             Enter 4 numbers below, then click &quot;Solve&quot; to see every
             solution that equals 24.
           </p>
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col items-center gap-4 sm:p-2 my-4 w-[90vw] sm:w-auto mx-auto"
-          >
-            <div className="grid grid-cols-4 gap-4 w-full max-w-[40rem]">
-              {numbers.map((number, index) => (
-                <input
-                  className="aspect-square text-5xl sm:text-8xl text-center rounded-lg bg-blue-300"
-                  key={index}
-                  type="text"
-                  value={number}
-                  onChange={(event) =>
-                    handleInputChange(index, event.target.value)
-                  }
-                  maxLength={1}
-                  pattern="[1-9]"
-                  required
-                />
-              ))}
-            </div>
-            <div className="grid grid-cols-2 gap-4 w-full max-w-[40rem]">
-              <button
-                type="submit"
-                disabled={loading}
-                className="py-4 text-2xl text-white font-semibold rounded-lg bg-blue-500 hover:bg-opacity-90"
-              >
-                {loading ? "Loading..." : "Solve"}
-              </button>
-              <button
-                type="button"
-                onClick={handleClearButton}
-                className="py-4 text-2xl text-white font-semibold rounded-lg bg-slate-400 hover:bg-opacity-90"
-              >
-                Clear
-              </button>
-            </div>
-          </form>
-          {result ? (
-            <div className="bg-blue-300 rounded-lg w-[90vw] sm:w-[40rem] p-2 my-4 mx-auto">
-              <h2 className="font-semibold text-xl py-2">{result}</h2>
-              {solutions.length > 0 && (
-                <ul className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-x-8 px-2 sm:px-12 my-4">
-                  {solutions.map((solution, index) => (
-                    <li className="bg-blue-200 rounded-lg py-2" key={index}>
-                      {solution}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : null}
+          <FormBox
+            numbers={numbers}
+            loading={loading}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            handleClearButton={handleClearButton}
+          />
+          <ResultBox result={result} solutions={solutions} />
         </div>
       </main>
     </>
